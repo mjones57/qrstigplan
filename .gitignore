@@ -186,3 +186,7 @@ results/
 
 # Mac
 .DS_Store
+
+# Personal Files
+roadmap.html
+ROADMAP.md

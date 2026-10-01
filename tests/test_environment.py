@@ -1,15 +1,6 @@
 import pytest
-from shapely import Polygon
 
 from qrstigplan.env.environment import Environment
-
-BOUNDS = (0.0, 0.0, 50.0, 50.0)
-SQUARE = Polygon([(20, 20), (30, 20), (30, 30), (20, 30)])
-
-
-@pytest.fixture
-def env():
-    return Environment(bounds=BOUNDS, obstacles=(SQUARE,), inflation=0.0)
 
 
 @pytest.mark.parametrize(
@@ -42,8 +33,8 @@ def test_point_is_free(env, p, expected):
     assert env.point_is_free(p) == expected
 
 
-def test_inflation_blocks_near_misses():
-    env1 = Environment(bounds=BOUNDS, obstacles=(SQUARE,), inflation=0.0)
-    env2 = Environment(bounds=BOUNDS, obstacles=(SQUARE,), inflation=1.0)
+def test_inflation_blocks_near_misses(env):
+    env1 = env
+    env2 = Environment(env.bounds, env.obstacles, inflation=1.0)
     assert env1.segment_is_free((10, 30.5), (40, 30.5))
     assert not env2.segment_is_free((10, 30.5), (40, 30.5))

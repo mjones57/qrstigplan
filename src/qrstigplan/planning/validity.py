@@ -30,7 +30,7 @@ class Validation:
     def __post_init__(self):
         if self.reason == Reason.SEGMENT_BLOCKED and self.bad_segment is None:
             raise ValueError("Blocked segment: Expected a value for bad_segment but got None")
-        if self.reason != Reason.SEGMENT_BLOCKED and type(self.bad_segment) is int:
+        if self.reason != Reason.SEGMENT_BLOCKED and self.bad_segment is not None:
             raise ValueError("Bad segment returned while reason is None")
 
 
@@ -41,7 +41,7 @@ def validate_path(path, env, start, goal, tol=1e-9) -> Validation:
     arr = np.asarray(path, dtype=float)
 
     # Ensure array shape is (N, 2), raise error otherwise
-    if arr.ndim != 2 or arr.shape[1] != 2 or False in np.isfinite(arr):
+    if arr.ndim != 2 or arr.shape[1] != 2 or not np.isfinite(arr).all():
         raise ValueError("Path array either wrong shape or contains non-finite value")
 
     # Check if path too short
@@ -49,11 +49,12 @@ def validate_path(path, env, start, goal, tol=1e-9) -> Validation:
         return Validation(reason=Reason.TOO_FEW_NODES)
 
     # Ensure start point within tol of nominal start
-    if np.linalg.norm(arr[0] - start) >= tol:
+
+    if np.linalg.norm(arr[0] - start) > tol:
         return Validation(reason=Reason.WRONG_START)
 
     # Ensure end point within tol of nominal goal
-    if np.linalg.norm(arr[-1] - goal) >= tol:
+    if np.linalg.norm(arr[-1] - goal) > tol:
         return Validation(reason=Reason.WRONG_GOAL)
 
     # Check for blocked segment along path

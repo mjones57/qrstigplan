@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 
 import shapely
 from shapely.geometry import LineString, Point, Polygon
+from shapely.geometry.base import BaseGeometry
 
 
 @dataclass(frozen=True)
@@ -11,7 +12,7 @@ class Environment:
     inflation: float = 0.0
     # and other private derived fields, init=False
     _box: Polygon = field(init=False, repr=False)
-    _union: shapely.Geometry = field(init=False, repr=False)  # Polygon | MultiPolygon |
+    _union: BaseGeometry = field(init=False, repr=False)  # Polygon | MultiPolygon |
     # GeometryCollection
 
     def __post_init__(self):
@@ -36,3 +37,8 @@ class Environment:
         if not self._box.covers(Point(p)) or self._union.intersects(Point(p)):
             return False
         return True
+
+    @property
+    def blocked(self) -> BaseGeometry:
+        """The inflated obstacles, merged: every pt in the map that is not free"""
+        return self._union

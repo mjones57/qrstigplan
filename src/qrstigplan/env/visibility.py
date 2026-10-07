@@ -1,6 +1,7 @@
 import itertools
 import math
 from dataclasses import dataclass
+from enum import Enum, auto
 
 import numpy as np
 import shapely
@@ -77,3 +78,26 @@ def optimal_path(env, start, goal, eps: float = 1e-6) -> OptimalPath:
 
 
 UNSOLVABLE = OptimalPath(math.inf, None)  # UNSOLVABLE
+
+
+class Solvability(Enum):
+    SOLVABLE = auto()
+    START_BLOCKED = auto()
+    GOAL_BLOCKED = auto()
+    DISCONNECTED = auto()  # both ends free, no valid path
+
+
+def solvability(env, start, goal) -> Solvability:
+    """Determines the solvability of given env"""
+
+    # check if start or goal blocked
+    if not env.point_is_free(start):
+        return Solvability.START_BLOCKED
+    if not env.point_is_free(goal):
+        return Solvability.GOAL_BLOCKED
+
+    # let optimal_path decide solvable or disconnected
+    if optimal_path(env, start, goal):
+        return Solvability.SOLVABLE
+
+    return Solvability.DISCONNECTED

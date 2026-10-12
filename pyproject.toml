@@ -8,7 +8,7 @@ version = "0.1.0.dev0"
 description = "Stigmergic multi-robot motion planning with QR-encoded paths"
 readme = "README.md"
 requires-python = ">=3.12"
-license = "MIT"            # confirm first
+license = "MIT"            
 authors = [{ name = "Miles Jones" }]
 dependencies = ["numpy>=2.0", "scipy>=1.11", "shapely>=2.0", "qrcode>=8.0"]
 

@@ -58,7 +58,7 @@ env = generate_environment(rng, start, goal).env
 
 # The shortest collision-free path, from the visibility graph
 best = optimal_path(env, start, goal)
-print(f"c* = {best.length:.2f}")                  # c* = 67.71
+print(f"c* = {best.length:.2f}")  # c* = 67.71
 
 # Every path is checked before it counts as a success
 print(validate_path(best.path, env, start, goal))  # Validation(reason=None, bad_segment=None)

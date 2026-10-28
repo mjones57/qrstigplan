@@ -10,7 +10,9 @@ def fits_version1_l(text: str) -> bool:
     Test if text fits a Version 1 QR code at error correction level L.
     Return True if it fits.
     """
-    qr = qrcode.QRCode(version=1, error_correction=ERROR_CORRECT_L)
+
+    # mask does not affect capacity. mask_pattern=0 skips the mask search to make it faster
+    qr = qrcode.QRCode(version=1, error_correction=ERROR_CORRECT_L, mask_pattern=0)
     qr.add_data(text)
     try:
         qr.make(fit=False)
